@@ -1,0 +1,5 @@
+# efiimage-sota.wks with fixed partition UUIDs and ESP volume ID (reproducible)
+part /boot --source bootimg-sota-efi --sourceparams="loader=grub-efi" --ondisk hda --label efi --active --align 1024 --uuid 3c1e9a52-6d1f-4b8e-9f2a-1d7e5c4b3a01 --fsuuid 0x7A5E1D01
+part / --source otaimage --ondisk hda --fstype=ext4 --align 1024 --use-uuid --uuid 3c1e9a52-6d1f-4b8e-9f2a-1d7e5c4b3a02
+
+bootloader --ptable gpt --timeout=0 --append="rootfstype=ext4 console=ttyS0,115200 console=tty0" --configfile="grub-ota.cfg"
