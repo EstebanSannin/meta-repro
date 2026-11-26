@@ -94,3 +94,7 @@ meta-cyclonedx, meta-torizon); this layer is the place to prove them first.
   depend on each builder's hash-equivalence database. Starting from an empty
   hash-equivalence database should make them byte-identical too (not tested).
 - `*.testdata.json` contains build paths and is excluded from comparisons.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
