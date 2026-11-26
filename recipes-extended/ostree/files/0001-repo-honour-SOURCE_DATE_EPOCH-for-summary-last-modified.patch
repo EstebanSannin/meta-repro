@@ -1,0 +1,27 @@
+From: repro study <repro@localhost>
+Subject: [PATCH] repo: honour SOURCE_DATE_EPOCH for summary last-modified
+
+ostree_repo_regenerate_summary() stores the wall-clock time as
+ostree.summary.last-modified, so the summary of an otherwise identical
+repo differs between builds. Use SOURCE_DATE_EPOCH when it is set.
+
+Upstream-Status: Pending
+---
+--- a/src/libostree/ostree-repo.c
++++ b/src/libostree/ostree-repo.c
+@@ -6016,9 +6016,14 @@
+     }
+ 
+   {
++    /* Honour SOURCE_DATE_EPOCH so a regenerated summary is reproducible. */
++    guint64 last_modified = g_get_real_time () / G_USEC_PER_SEC;
++    const char *sde = g_getenv ("SOURCE_DATE_EPOCH");
++    if (sde != NULL && *sde != 0)
++      last_modified = g_ascii_strtoull (sde, NULL, 10);
+     g_variant_dict_insert_value (
+         &additional_metadata_builder, OSTREE_SUMMARY_LAST_MODIFIED,
+-        g_variant_new_uint64 (GUINT64_TO_BE (g_get_real_time () / G_USEC_PER_SEC)));
++        g_variant_new_uint64 (GUINT64_TO_BE (last_modified)));
+   }
+ 
+   {
