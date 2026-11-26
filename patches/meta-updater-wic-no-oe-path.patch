@@ -1,0 +1,19 @@
+diff --git a/scripts/lib/wic/plugins/source/bootimg_sota_efi.py b/scripts/lib/wic/plugins/source/bootimg_sota_efi.py
+index 53b72a7..df3f985 100644
+--- a/scripts/lib/wic/plugins/source/bootimg_sota_efi.py
++++ b/scripts/lib/wic/plugins/source/bootimg_sota_efi.py
+@@ -15,7 +15,13 @@ import os
+ import shutil
+ import re
+ 
+-from oe.path import copyhardlinktree
++import subprocess
++
++# Workaround: wic now runs outside bitbake and cannot import oe.path.
++def copyhardlinktree(src, dst):
++    os.makedirs(dst, exist_ok=True)
++    if subprocess.call("cp -afl %s/. %s/" % (src, dst), shell=True) != 0:
++        subprocess.check_call("cp -a %s/. %s/" % (src, dst), shell=True)
+ from glob import glob
+ 
+ from wic import WicError
